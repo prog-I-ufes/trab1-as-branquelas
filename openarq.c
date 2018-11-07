@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <math.h>
 
+/*
+a config knn recebe os ponteiros onde serão guardadas as informações:
+ da distância k (k)
+ do tipo da distancia (d)
+ e se for de Minchowsky, o valor de r (r)
+*/
+
 void configknn (int *k, char *d, float *r, FILE *f1){
     int a=0;
     char b;
@@ -15,6 +22,10 @@ void configknn (int *k, char *d, float *r, FILE *f1){
     *r=c;
 }
 
+/*
+a função readpaths está apenas lendo os caminhos dos arquivos, alocando em strings
+e escrevendo num arquivo saida.txt
+*/
 void readpaths (char dtreino[], char dteste[], char saida[], FILE *f1){
     FILE *f2;
     fgets (dtreino,50,f1);
@@ -37,6 +48,6 @@ int main (){
     char d;
     float r;
     configknn (&k, &d, &r, f1);
-    printf (" %i %c %.2f\n", k, d, r);
+    printf (" %i %c %.2f\n", k, d, r);//isso só tá imprimindo as variaveis de (configknn)
     fclose (f1);
 }

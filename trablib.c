@@ -461,3 +461,85 @@ int* calc_dists (float **mat_te, float **mat_tr, float **dist, float **du_dist, 
         return rot;
 }
 
+int soma_dp (int n, int mat[n][n]){
+    int soma=0;
+    for (int i=0;i<n;i++){
+        for (int j=0;j<n;j++){
+            if (i==j){
+                soma = soma + mat[i][j];
+            }
+        }
+    }
+    return soma;
+}
+
+void inicializamat (int nl, int nc, int mat[nl][nc]){
+    for (int i=0; i<nl; i++) {
+        for(int j=0; j<nc; j++) {
+            mat[i][j] = 0;
+        }
+    }
+}
+void printmatestat (int nl, int nc, int mat[nl][nc]){
+    int i=0,j=0;
+    for (i=0;i<nl;i++){
+        for (j=0;j<nc;j++){
+        printf ("%i ",mat[i][j]);
+        }
+        printf ("\n");
+    }
+    printf ("\n");
+}
+
+int* lastc (float **mat, int tamc, int taml){
+    int *lastc;
+    lastc = (int *)malloc(taml*sizeof(int));
+    for (int i=0;i<taml;i++){
+        int aux = mat[i][tamc-1];
+        lastc[i] = aux;
+    }
+    return lastc;
+}
+
+void printv (int *v, int tamv){
+    for (int i=0;i<tamv;i++){
+            printf ("%i \n",v[i]);
+    }
+}
+
+void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[]){
+    int *rotsmat_te,qr=0;
+    rotsmat_te = lastc (mat_te,tamc_te,taml_te);
+    qr = quant_rotulo (mat_te,taml_te,tamc_te);
+    
+    int mat[qr][qr];
+    inicializamat (qr,qr,mat);
+   
+    for (int i=0;i < (lconf-3);i++){
+        for (int j=0;j< taml_te;j++){
+            for (int h=0;h< qr;h++){
+                if (rot[i][j]==h){
+                    if (rot[i][j]==rotsmat_te[j]-1){
+                        mat[h][h]++;
+                    }else{
+                        mat[h][rotsmat_te[j]-1]++;
+                    }
+                }
+            }
+        }
+        float na = soma_dp (qr,mat), nt = taml_te;
+        float ac = (na/nt)*100;
+
+        printf ("%.2f\n\n",ac);
+        printmatestat (qr,qr,mat);
+        printf ("\n");
+        printv (rot[i],taml_te);
+        printf ("-------------------------------------\n");
+
+        inicializamat (qr,qr,mat);
+    }
+
+    
+    free (rotsmat_te);
+}
+

@@ -55,6 +55,9 @@ int main (){
 
     }
 
+    //printmat (mat_te, taml_te,tamc_te);
+    //printmat_int(rot,(lconf-3),taml_te);
+    predicoes (mat_te,taml_te,tamc_te,rot,lconf,arq_s);
     printmat_int(rot,(lconf-3),taml_te);
 
 

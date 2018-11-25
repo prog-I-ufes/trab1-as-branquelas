@@ -55,4 +55,15 @@ int* rotula (int taml_te, int taml_tr, int k, int tamc, float **mat_tr, float **
 
 int* calc_dists (float **mat_te, float **mat_tr, float **dist, float **du_dist, float **kp, int taml_te,int tamc,int taml_tr, int lconf, int k, char d, float r,int* rot);
 
+int soma_dp (int n, int mat[n][n]);
+
+void inicializamat (int nl, int nc, int mat[nl][nc]);
+
+void printmatestat (int nl, int nc, int mat[nl][nc]);
+
+int* lastc (float **mat, int tamc, int taml);
+
+void printv (int *v, int tamv);
+
+void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[]);
 #endif

@@ -7,6 +7,7 @@
 //Função que aloca todos os valores de cada path em uma matriz
 void ler_path(FILE *path, float **mat,int taml,int tamc){
     int j=0,i=0;
+    char c;
 	while (!feof(path)){
          for (i = 0; i < taml; i++) {
             for (j = 0; j < tamc; j++) {
@@ -17,13 +18,14 @@ void ler_path(FILE *path, float **mat,int taml,int tamc){
 }
 
 //Função tam_coluna calcula o numero de colunas da matriz q irá armazenar os valores do arquivo .csv
-int tam_coluna(char *l1){
-  int i=0,tam=1;
-  for ( i = 0; i < strlen(l1); i++) {
-     if (l1[i]==','){
-      tam = tam + 1;
-     }
-  }
+int tam_coluna(FILE *path){
+  int i=0,tam=0;
+  float num;
+  char c;
+  do{
+    fscanf(path,"%f%c",&num,&c);
+    tam++;
+  }while(c!='\n');
   return tam;
 }
 
@@ -109,40 +111,6 @@ void dist_minkosky (float **mat_te,float **mat_tr,float **dist,int taml_te,int t
     }
 }
 
-//Calcula a distancia de chebyshev
-void dist_chebyshev(float **mat_te, float **mat_tr,float **dist,int taml_te,int tamc,int taml_tr){
-  float aux[tamc];
-  int i=0,k=0,j=0;
-  for (k = 0; k < taml_te; ++k)
-  {
-     for (i = 0; i < taml_tr; ++i)
-     {  
-        dist[k][i]=0;
-        for (j = 0; j < tamc; ++j)
-        {
-           aux[j] = sqrt(pow(mat_tr[i][j]-mat_te[k][j],2));
-      //Essa expressão(sqrt(pow(p[i]-q[i],2))) = |p[i]-q[i]|
-           if (dist[k][i] < aux[j])
-           {
-             dist[k][i] = aux[j];
-           }
-        }
-     }
-  }
-}
-
-//Duplica uma matriz. Tal função é necessária para o calculo dos knn, onde a matriz dist vai ser duplicada
-void duplica_mat(float **dist, float **du_dist,int taml_te,int taml_tr){
-  int i=0,j=0;
-  for (i = 0; i < taml_te; ++i)
-  {
-    for (j = 0; j < taml_tr; ++j)
-    {
-      du_dist[i][j] = dist[i][j];
-    }
-  }
-}
-
 //Essa função realiza a ordenação de um vetor usaando o algoritmo de insertion sort
 void insertionSort(float *vet, int tam )
 {
@@ -162,6 +130,38 @@ void insertionSort(float *vet, int tam )
               
       vet[i+1] = aux;
    }
+}
+
+//Calcula a distancia de chebyshev
+void dist_chebyshev(float **mat_te, float **mat_tr,float **dist,int taml_te,int tamc,int taml_tr){
+  float aux[tamc];
+  int i=0,k=0,j=0;
+  for (k = 0; k < taml_te; ++k)
+  {
+     for (i = 0; i < taml_tr; ++i)
+     {  
+        dist[k][i]=0;
+        for (j = 0; j < tamc; ++j)
+        {
+           aux[j] = sqrt(pow(mat_tr[i][j]-mat_te[k][j],2));
+      //Essa expressão(sqrt(pow(p[i]-q[i],2))) = |p[i]-q[i]|
+        }
+        insertionSort(aux,tamc);
+        dist[k][i] = aux[tamc -1];
+     }
+  }
+}
+
+//Duplica uma matriz. Tal função é necessária para o calculo dos knn, onde a matriz dist vai ser duplicada
+void duplica_mat(float **dist, float **du_dist,int taml_te,int taml_tr){
+  int i=0,j=0;
+  for (i = 0; i < taml_te; ++i)
+  {
+    for (j = 0; j < taml_tr; ++j)
+    {
+      du_dist[i][j] = dist[i][j];
+    }
+  }
 }
 
 //Dado um valor k essa função calcula os k-primeiros numeros de uma matriz, utilizando para isso o insertionsort
@@ -330,15 +330,19 @@ void treatstr (char s[]){
     }
 }
 
-void readpaths (char dtreino[], char dteste[], char saida[], FILE *f1){
+char* readpaths (char *dtreino, FILE *f1){
     FILE *f2;
+    int len;
+    dtreino = (char*)malloc(500*sizeof(char));
     fgets (dtreino,50000,f1);
-    fgets (dteste,50000,f1);
-    fgets (saida,50000,f1);
+    
+    len = strlen(dtreino);
+    dtreino = realloc(dtreino,len*sizeof(char));
 
     treatstr (dtreino);
-    treatstr (dteste);
-    treatstr (saida);
+
+    return dtreino;
+    free(dtreino);
 }
 
 void openfile (char name[]){
@@ -354,18 +358,16 @@ float** aloca (char arq[],int v[2]){
     FILE *f;
     int tstr,tamc,taml;
     float **mat;
-    char *l1;
     
     //Calculando o tamanho da primeira linha do iris_teste (para depois calcular o numero de colunas)
 	f = fopen(arq,"r");
-    tstr = tam_str(f);
-    l1 = (char *)malloc(tstr*sizeof(char));
-	fgets(l1,tstr,f);
     
     //Calculando o numero de colunas e o numero de linhas do iris_teste
-    tamc = tam_coluna(l1);
+    tamc = tam_coluna(f);
+    printf(" %d\n",tamc);
+    //rewind(f);
     taml = tam_linha(f);
-    //printf("%s %d\n", arq, taml);
+    printf(" %d\n",taml);
     
     //Criando uma matriz com todos os valores do iris_teste
     mat = (float**)malloc(taml*sizeof(float*));
@@ -380,7 +382,6 @@ float** aloca (char arq[],int v[2]){
     v[1]=tamc;
 
     fclose (f);
-    free (l1);
     return mat;
 }
 
@@ -530,9 +531,12 @@ void printv (int *v, int tamv,FILE *pr){
     }
 }
 
-void cria_pred(int taml,char **pred){
+void cria_pred(int taml,char **pred,char *arq_s){
+ char aux[taml];
  for(int i =0;i < taml; i++){
-   sprintf(pred[i],"predicoes/predicao_%d.txt",(i+1));
+   strcpy(pred[i],arq_s);
+   sprintf(aux,"predicao_%d.txt",(i+1));
+   strcat(pred[i],aux);
  }
 }   
 

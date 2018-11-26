@@ -3,7 +3,7 @@
 
 void ler_path(FILE *path, float **mat,int taml,int tamc);
 
-int tam_coluna(char *l1);
+int tam_coluna(FILE *path);
 
 int tam_linha(FILE *path);
 
@@ -43,7 +43,7 @@ void configknn (int k[], char d[], float r[], FILE *f1, int lconf);
 
 void treatstr (char s[]);
 
-void readpaths (char dtreino[], char dteste[], char saida[], FILE *f1);
+char* readpaths (char *dtreino, FILE *f1);
 
 void openfile (char name[]);
 
@@ -67,7 +67,7 @@ void printmatestat (int nl, int nc, int mat[nl][nc],FILE *pr);
 
 int* lastc (float **mat, int tamc, int taml);
 
-void cria_pred(int taml,char **pred);  
+void cria_pred(int taml,char **pred,char *arq_s);  
 
 void printv (int *v, int tamv,FILE *pr);
 

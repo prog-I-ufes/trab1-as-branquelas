@@ -532,7 +532,7 @@ void printv (int *v, int tamv,FILE *pr){
 
 void cria_pred(int taml,char **pred){
  for(int i =0;i < taml; i++){
-   sprintf(pred[i],"predicao_%d.txt",(i+1));
+   sprintf(pred[i],"predicoes/predicao_%d.txt",(i+1));
  }
 }   
 
@@ -563,7 +563,7 @@ void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, c
         pr = fopen(pred[i],"a+");
         fprintf (pr,"%.2f\n\n",ac);
         printmatestat (qr,qr,mat,pr);
-        fprintf (pr,"%c",x);
+        //fprintf (pr,"%c",x);
         printv (rot[i],taml_te,pr);
         
         fclose(pr);

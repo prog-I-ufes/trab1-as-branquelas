@@ -1,6 +1,6 @@
 all: trab1
 
-trab1: trab1.c trablib.o
+trab1: trab1.c trablib.h trablib.o
 	gcc -o trab1 trab1.c trablib.o -lm
 
 trablib.o: trablib.c

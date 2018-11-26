@@ -21,9 +21,6 @@ int main (){
     arq_dte = readpaths (arq_dte, f1);
     arq_s = readpaths (arq_s, f1); 
 
-    printf("%s\n",arq_dtr);
-    printf("%s\n",arq_dte);
-    printf("%s\n",arq_s);
 
     //lendo as paths do arquivo config
     
@@ -39,13 +36,7 @@ int main (){
 
     int taml_te = lc_te[0], tamc_te = lc_te[1];
     int taml_tr = lc_tr[0], tamc_tr = lc_tr[1];
-    printf("%d\n",taml_te);
-    printf("%d\n",tamc_te);
-    printf("%d\n",taml_tr);
-    printf("%d\n",tamc_tr);
-
-
-
+    
 
     //Até aqui ta certo!
 

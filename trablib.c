@@ -364,10 +364,10 @@ float** aloca (char arq[],int v[2]){
     
     //Calculando o numero de colunas e o numero de linhas do iris_teste
     tamc = tam_coluna(f);
-    printf(" %d\n",tamc);
+    //printf(" %d\n",tamc);
     //rewind(f);
     taml = tam_linha(f);
-    printf(" %d\n",taml);
+    //printf(" %d\n",taml);
     
     //Criando uma matriz com todos os valores do iris_teste
     mat = (float**)malloc(taml*sizeof(float*));

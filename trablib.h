@@ -11,6 +11,8 @@ void libera_matriz(int l,float **mat);
 
 void libera_matriz_int(int l,int **mat);
 
+void libera_matriz_char(int l,char **mat);
+
 int tam_str(FILE *path);
 
 void dist_euclidiana (float **mat_te,float **mat_tr,float **dist,int taml_te,int tamc,int taml_tr );
@@ -51,6 +53,8 @@ float** cria_mat (int l, int c);
 
 int** cria_mat_int (int l, int c);
 
+char** cria_mat_char (int l, int c);
+
 int* rotula (int taml_te, int taml_tr, int k, int tamc, float **mat_tr, float **dist, float **kp,int*rot);
 
 int* calc_dists (float **mat_te, float **mat_tr, float **dist, float **du_dist, float **kp, int taml_te,int tamc,int taml_tr, int lconf, int k, char d, float r,int* rot);
@@ -59,11 +63,13 @@ int soma_dp (int n, int mat[n][n]);
 
 void inicializamat (int nl, int nc, int mat[nl][nc]);
 
-void printmatestat (int nl, int nc, int mat[nl][nc]);
+void printmatestat (int nl, int nc, int mat[nl][nc],FILE *pr);
 
 int* lastc (float **mat, int tamc, int taml);
 
-void printv (int *v, int tamv);
+void cria_pred(int taml,char **pred);  
 
-void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[]);
+void printv (int *v, int tamv,FILE *pr);
+
+void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[],char **pred);
 #endif

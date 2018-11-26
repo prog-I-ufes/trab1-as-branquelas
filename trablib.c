@@ -57,6 +57,13 @@ void libera_matriz_int(int l,int **mat){
     }
     free (mat);
 }
+void libera_matriz_char(int l,char **mat){
+    int i=0;
+    for ( i = 0; i < l; i++) {
+       free(mat[i]);
+    }
+    free (mat);
+}
 
 //Calcula o tamanho de uma linha do arquivo.csv
 int tam_str(FILE *path){
@@ -405,6 +412,21 @@ int** cria_mat_int (int l, int c){
     return mat;
 }
 
+char** cria_mat_char (int l, int c){
+    char **mat = {0};
+	
+    mat = (char**)malloc(l*sizeof(char*));
+    
+    for (int i = 0; i < l; ++i)
+    {
+    	mat[i]=(char*)malloc(c*sizeof(char));
+        
+    }
+
+    return mat;
+}
+
+
 int* rotula (int taml_te, int taml_tr, int k, int tamc, float **mat_tr, float **dist, float **kp,int*rot){
     int **pos,num_rot;
     //int *rot;
@@ -480,15 +502,16 @@ void inicializamat (int nl, int nc, int mat[nl][nc]){
         }
     }
 }
-void printmatestat (int nl, int nc, int mat[nl][nc]){
+void printmatestat (int nl, int nc, int mat[nl][nc],FILE *pr){
     int i=0,j=0;
+    char x = '\n';
     for (i=0;i<nl;i++){
         for (j=0;j<nc;j++){
-        printf ("%i ",mat[i][j]);
+        fprintf (pr,"%i ",mat[i][j]);
         }
-        printf ("\n");
+        fprintf (pr,"%c",x);
     }
-    printf ("\n");
+    fprintf (pr,"%c",x);
 }
 
 int* lastc (float **mat, int tamc, int taml){
@@ -501,13 +524,19 @@ int* lastc (float **mat, int tamc, int taml){
     return lastc;
 }
 
-void printv (int *v, int tamv){
+void printv (int *v, int tamv,FILE *pr){
     for (int i=0;i<tamv;i++){
-            printf ("%i \n",v[i]);
+            fprintf (pr,"%i \n",v[i]);
     }
 }
 
-void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[]){
+void cria_pred(int taml,char **pred){
+ for(int i =0;i < taml; i++){
+   sprintf(pred[i],"predicao_%d.txt",(i+1));
+ }
+}   
+
+void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, char saida[],char **pred){
     int *rotsmat_te,qr=0;
     rotsmat_te = lastc (mat_te,tamc_te,taml_te);
     qr = quant_rotulo (mat_te,taml_te,tamc_te);
@@ -528,13 +557,16 @@ void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, c
             }
         }
         float na = soma_dp (qr,mat), nt = taml_te;
-        float ac = (na/nt)*100;
-
-        printf ("%.2f\n\n",ac);
-        printmatestat (qr,qr,mat);
-        printf ("\n");
-        printv (rot[i],taml_te);
-        printf ("-------------------------------------\n");
+        float ac = (na/nt);
+        FILE *pr;
+        char x ='\n';
+        pr = fopen(pred[i],"a+");
+        fprintf (pr,"%.2f\n\n",ac);
+        printmatestat (qr,qr,mat,pr);
+        fprintf (pr,"%c",x);
+        printv (rot[i],taml_te,pr);
+        
+        fclose(pr);
 
         inicializamat (qr,qr,mat);
     }

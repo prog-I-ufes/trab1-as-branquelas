@@ -55,10 +55,17 @@ int main (){
 
     }
 
+    //Criando os arquivos prediçoes
+
+    char **pred;
+    pred = cria_mat_char((lconf-3),(8 + taml_te));
+    cria_pred((lconf-3),pred);
+
     //printmat (mat_te, taml_te,tamc_te);
     //printmat_int(rot,(lconf-3),taml_te);
-    predicoes (mat_te,taml_te,tamc_te,rot,lconf,arq_s);
-    printmat_int(rot,(lconf-3),taml_te);
+    predicoes (mat_te,taml_te,tamc_te,rot,lconf,arq_s,pred);
+    
+    //printmat_int(rot,(lconf-3),taml_te);
 
 
     libera_matriz (taml_te,dist);
@@ -67,6 +74,7 @@ int main (){
     libera_matriz (taml_te,mat_te);
     libera_matriz (taml_tr,mat_tr);
     libera_matriz_int((lconf-3),rot);
+    libera_matriz_char((lconf-3),pred);
     fclose (f1);
     return 0;
 }

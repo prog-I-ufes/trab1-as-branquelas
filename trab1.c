@@ -30,6 +30,7 @@ int main (){
 
     mat_te = aloca (arq_dte,lc_te);
     mat_tr = aloca (arq_dtr,lc_tr); 
+
     
     printf("Alocando os valores do treino e teste nas matrizes \n \n");
     //Até aqui ta certo!
@@ -40,10 +41,16 @@ int main (){
 
     //Até aqui ta certo!
 
-    float **dist, **du_dist, **kp;
-    dist = cria_mat (taml_te,taml_tr);
-    du_dist = cria_mat (taml_te,taml_tr);
-    kp = cria_mat (taml_te,taml_tr);
+    Distancias **teste;
+    teste = cria_mat_dist(taml_te,taml_tr);
+    for(int i=0;i < taml_te;i++){
+        for(int j=0;j < taml_tr;j++){
+            teste[i][j].dt = 0;
+        }
+    }
+    
+    int  **kp;
+    kp = cria_mat_int (taml_te,taml_tr);
 
     int k[lconf-3];
     char d[lconf-3];
@@ -59,9 +66,8 @@ int main (){
     rot = cria_mat_int((lconf-3),taml_te);
     
     printf("Calculando as distancias \n \n");
-    
     for (int i =0;i < (lconf-3);i++){
-       rot[i]= calc_dists (mat_te, mat_tr, dist, du_dist, kp, taml_te, tamc_te, taml_tr, lconf, k[i], d[i], r[i],rot[i]);
+       calc_dists (mat_te, mat_tr,teste, kp, taml_te, tamc_te, taml_tr, lconf, k[i], d[i], r[i],rot[i]);
 
     }
 
@@ -77,13 +83,13 @@ int main (){
     predicoes (mat_te,taml_te,tamc_te,rot,lconf,arq_s,pred);
 
 
-    libera_matriz (taml_te,dist);
-    libera_matriz (taml_te,du_dist);
-    libera_matriz (taml_te,kp);
+
+    libera_matriz_int (taml_te,kp);
     libera_matriz (taml_te,mat_te);
     libera_matriz (taml_tr,mat_tr);
     libera_matriz_int((lconf-3),rot);
     libera_matriz_char((lconf-3),pred);
+    libera_matriz_dist(taml_te,teste);
     free(arq_dte);
     free(arq_dtr);
     free(arq_s);

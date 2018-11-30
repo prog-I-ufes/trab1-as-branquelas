@@ -5,8 +5,14 @@ struct distancias{
     float dt;
     int pos;
 };
-
 typedef struct distancias Distancias;
+
+struct quants{
+    int q;
+    int r;
+};
+typedef struct quants Quants;
+
 
 void ler_path(FILE *path, float **mat,int taml,int tamc);
 
@@ -36,7 +42,9 @@ void k_proximos(Distancias **dist,int k,int **kp,int taml_te,int taml_tr);
 
 int quant_rotulo(float **mat_tr,int taml_tr,int tamc);
 
-int* rotulo_final(int **pos, int *rot,int num_rot,int taml_te, int k);
+void rotulos_finais (int k, int num_rot, int **rots, int taml_te,int *rot);
+
+int rf (int k, int num_rot, int *rots);
 
 void printmat (float **mat, int nl, int nc);
 

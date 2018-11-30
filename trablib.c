@@ -114,46 +114,34 @@ int quant_rotulo(float **mat_tr,int taml_tr,int tamc){
 	return aux;
 }
 
-//Função que da o rotulo final de cada teste;ALTEREI AQUI(ROT DE FLOAT PARA INT)
-int* rotulo_final(int **pos, int *rot,int num_rot,int taml_te, int k){
-    int aux[taml_te][num_rot],help=0;
-	for (int i = 0; i < taml_te; ++i)
-	{
-		for (int j = 0; j < num_rot; ++j)
-		{
-			aux[i][j]=0;
-		}
-	}
-	for (int i = 0; i < num_rot ; ++i)
-	{
-		for (int j = 0; j < taml_te; ++j)
-		{
-			for (int d = 0; d < k; ++d)
-			{
-				if (pos[j][d] == i+1 )
-				{
-					aux[j][i] = aux[j][i] + 1;
-				}
-			}
-		}
-	}
-    for (int i = 0; i < taml_te; ++i)
-    {
-      for ( int j = 0; j < num_rot; ++j)
-      {
-      	if (aux[i][j] > help)
-      	{
-      		help = j + 1;
-      	}
-      	if (j == num_rot-1)
-      	{
-      		rot[i] = help - 1;
-      		help = 0;
-      	}
-      }
-    }
-    return rot;
 
+int rf (int k, int num_rot, int *rots){
+    int cont[num_rot];
+    for (int i=1;i<=num_rot;i++){
+        cont[i-1] = 0;
+        for (int j=0;j<k;j++){
+            if (i==rots[j]){
+                cont[i-1]++;
+            }
+        }
+    }
+
+    Quants res;
+    res.q = 0;
+    for (int i=0;i < num_rot;i++){
+        if (res.q < cont[i]){
+            res.q = cont[i];
+            res.r = i;
+        }
+    }
+    return res.r;
+
+}
+
+void rotulos_finais (int k, int num_rot, int **rots, int taml_te,int *rot){
+    for (int i=0;i < taml_te;i++){
+        rot[i]= rf (k,num_rot,rots[i]);
+    }
 }
 
 /*
@@ -384,7 +372,7 @@ void predicoes (float **mat_te, int taml_te, int tamc_te,int **rot, int lconf, c
                     if (rot[i][j]==rotsmat_te[j]-1){
                         mat[h][h]++;
                     }else{
-                        mat[h][rotsmat_te[j]-1]++;
+                        mat[rotsmat_te[j]-1][h]++;
                     }
                 }
             }
@@ -445,19 +433,18 @@ void dist_chebyshev(float **mat_te, float **mat_tr,Distancias **dist,int taml_te
 
   float aux;
   int i=0,k=0,j=0;
-  for (k = 0; k < taml_te; ++k)
+  for (k = 0; k < taml_te; k++)
   {
-     for (i = 0; i < taml_tr; ++i)
+     for (i = 0; i < taml_tr; i++)
      {  
         dist[k][i].dt=0;
-        for (j = 0; j < tamc; ++j)
+        for (j = 0; j < tamc; j++)
         {
            aux = fabs(mat_tr[i][j]-mat_te[k][j]);
            if(aux > dist[k][i].dt){
                dist[k][i].dt = aux;
            }
         }
-        
      }
   }
 }
@@ -530,11 +517,13 @@ void rotula_te (int taml_te, int taml_tr, int k, int tamc, float **mat_tr,  int 
     num_rot = quant_rotulo(mat_tr,taml_tr,tamc);
     rotu = cria_mat_int(taml_te,k);
     for(int i = 0;i < taml_te;i++){
+        
         for(int j = 0; j < k;j++){
             rotu[i][j] = mat_tr[kp[i][j]][tamc-1];
+            
         }
     }
-    rot = rotulo_final(rotu,rot,num_rot,taml_te,k);
+    rotulos_finais (k,num_rot,rotu,taml_te,rot);
     
     libera_matriz_int(taml_te,rotu);
 }
